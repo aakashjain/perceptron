@@ -1,7 +1,4 @@
-import numpy as np
-
-
-class Perceptron:
+class Perceptron(object):
 
     def __init__(self, learning_rate=0.1):
         self.learning_rate = learning_rate
@@ -44,7 +41,12 @@ class Perceptron:
 
 
 def accuracy(expected, calculated):
-    return np.mean(np.array(expected) == np.array(calculated))
+    n = len(expected)
+    count = 0
+    for i in range(n):
+        if expected[i] == calculated[i]:
+            count += 1
+    return float(count)/n
 
 
 if __name__ == '__main__':
