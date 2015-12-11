@@ -3,17 +3,16 @@ import numpy as np
 
 class Perceptron:
 
-    def __init__(self, learning_rate=0.1, threshold=0, bias=0):
+    def __init__(self, learning_rate=0.1):
         self.learning_rate = learning_rate
-        self.threshold = threshold
-        self.bias = bias
+        self.bias = 0
         self.weights = []
 
     def feed_forward(self, x):
         value = self.bias
         for i in range(len(x)):
             value += x[i] * self.weights[i]
-        if value > self.threshold:
+        if value > 0:
             return 1
         else:
             return -1
