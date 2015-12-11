@@ -7,14 +7,17 @@ class Perceptron:
         self.threshold = threshold
         self.weights = []
 
-    def classify(self, x):
+    def classify(self, x, labels = [0, 1]):
+        return labels[1] if self.feed_forward(x) > 0 else labels[0]
+
+    def feed_forward(self, x):
         return 1 if np.dot(x + [1], self.weights) > self.threshold else -1
 
-    def train(self, Xs, ys, epochs=100):
+    def train(self, Xs, ys, epochs=10):
         self.weights = np.random.uniform(-1, 1, len(Xs[0])+1)
         for _ in range(epochs):
             for i in range(len(Xs)):
-                _y = self.classify(Xs[i])
+                _y = self.feed_forward(Xs[i])
                 _x = Xs[i] + [1]
                 err = ys[i] - _y
                 self.weights = [self.learning_rate * err * _x[j]
