@@ -2,10 +2,11 @@ class Perceptron(object):
 
     def __init__(self, learning_rate=0.1):
         self.learning_rate = learning_rate
-        self.bias = 0
         self.weights = []
+        self.bias = 0
+        self.trained = False
 
-    def feed_forward(self, x):
+    def __feed_forward(self, x):
         value = self.bias
         for i in range(len(x)):
             value += x[i] * self.weights[i]
@@ -17,22 +18,27 @@ class Perceptron(object):
     def train(self, x, y, epochs=10, show_weights=False):
         vec_len = len(x[0])
         self.weights = [0] * vec_len
+        self.bias = 0
 
         for _ in range(epochs):
             for i in range(len(x)):
-                yp = self.feed_forward(x[i])
+                yp = self.__feed_forward(x[i])
                 err = y[i] - yp
                 self.bias += self.learning_rate * err
                 for j in range(vec_len):
                     self.weights[j] += self.learning_rate * err * x[i][j]
 
+        self.trained = True
         if show_weights:
             print self.weights, self.bias
 
     def classify(self, x, labels=[0,1]):
+        if not self.trained:
+            raise RuntimeError('Cannot use perceptron without training')
+
         y = []
         for i in x:
-            result = self.feed_forward(i)
+            result = self.__feed_forward(i)
             if result == 1:
                 y.append(labels[1])
             else:
@@ -51,16 +57,18 @@ def accuracy(expected, calculated):
 
 if __name__ == '__main__':
     p = Perceptron()
-    # x = [[0,0], [0,1], [1,0], [1,1]]
-    # y_and = [-1, -1, -1, 1]
-    # y_or = [-1, 1, 1, 1]
-    # p.train(x, y_and)
-    # print p.classify(x)
-    # p.train(x, y_or)
-    # print p.classify(x)
+
+    x = [[0,0], [0,1], [1,0], [1,1]]
+    y_and = [-1, -1, -1, 1]
+    y_or = [-1, 1, 1, 1]
+    print 'x1\t[0, 0, 1, 1]'
+    print 'x2\t[0, 1, 0, 1]'
+    p.train(x, y_and)
+    print 'and\t', p.classify(x)
+    p.train(x, y_or)
+    print 'or\t', p.classify(x)
 
     x, y, y_label = [], [], []
-
     f = open('ionosphere.data')
     for line in f.readlines():
         vals = line.rstrip().split(',')
@@ -74,4 +82,4 @@ if __name__ == '__main__':
 
     p.train(x, y, 10)
     y_calc = p.classify(x, ['b','g'])
-    print 'Accuracy:', accuracy(y_label, y_calc)
+    print 'Ionosphere dataset accuracy:', accuracy(y_label, y_calc)
