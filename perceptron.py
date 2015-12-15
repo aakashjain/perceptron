@@ -80,6 +80,6 @@ if __name__ == '__main__':
             y.append(1)
     f.close()
 
-    p.train(x, y, 10)
-    y_calc = p.classify(x, ['b','g'])
-    print 'Ionosphere dataset accuracy:', accuracy(y_label, y_calc)
+    p.train(x[:-100], y[:-100])
+    y_calc = p.classify(x[-100:], ['b','g'])
+    print 'Ionosphere dataset accuracy:', accuracy(y_label[-100:], y_calc)
